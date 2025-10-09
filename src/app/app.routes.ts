@@ -7,13 +7,16 @@ import {BasicTableComponent} from "./basic-table/basic-table.component";
 import {ModalUiComponent} from "./modal-ui/modal-ui.component";
 import {BasicUiElementComponent} from "./basic-ui-element/basic-ui-element.component";
 import {AuthGuard} from "./auth.guard";
+import {MediaComponent} from "./media/media.component";
 
 export const routes: Routes = [
-  { path: 'category', component: CategoryComponent, canActivate: [AuthGuard] },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'basic-form', component: BasicFormComponent },
   { path: 'basic-table', component: BasicTableComponent },
   { path: 'modal-ui', component: ModalUiComponent },
   { path: 'basic-ui-element', component: BasicUiElementComponent },
-  { path: '', component: LoginComponent }
+  { path: 'category', component: CategoryComponent, canActivate: [AuthGuard] },
+  { path: 'media', component: MediaComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

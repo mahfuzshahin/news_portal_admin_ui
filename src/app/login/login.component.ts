@@ -3,6 +3,7 @@ import {CommonModule} from "@angular/common";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "../service/auth.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-login',
@@ -12,17 +13,26 @@ import {AuthService} from "../service/auth.service";
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  email = '';
+  username = '';
   password = '';
   errorMessage = '';
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private toastr: ToastrService) {}
   login() {
-    const success = this.authService.login(this.email, this.password);
-
-    if (success) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.errorMessage = 'Invalid credentials. Please try again.';
-    }
+    const credentials = { username: this.username, password: this.password };
+    this.authService.login(credentials).subscribe({
+      next: (res) => {
+        if (res.data) {
+          console.log(res.data.access_token)
+          this.authService.saveSession(res.data.access_token);
+          this.toastr.success('Login successful!');
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.toastr.error('Invalid response from server');
+        }
+      },
+      error: () => {
+        this.toastr.error('Invalid username or password');
+      }
+    });
   }
 }

@@ -17,7 +17,6 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent implements OnInit{
   title = 'news_portal_admin_ui';
-  // isLoggedIn$!: Observable<boolean>
   isLoggedIn$ = this.authService.isLoggedIn$;
   constructor(private authService: AuthService) {}
   ngOnInit() {
