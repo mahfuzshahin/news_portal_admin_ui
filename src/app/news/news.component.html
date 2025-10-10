@@ -1,0 +1,75 @@
+<div class="p-4">
+  <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+    News Content
+  </label>
+
+  <editor
+    [(ngModel)]="content"
+    apiKey="ezebykkhw4j1qa2wjwx3nd02m5u6fww5cb3v3l1oc2acoeps"
+    (onInit)="onEditorInit($event)"
+    [init]="{
+      height: 800,
+  menubar: true,
+  plugins: 'image link media code lists preview',
+  toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | image link | code preview',
+  automatic_uploads: false,
+  image_advtab: true,
+  object_resizing: true,
+  file_picker_types: 'image',
+  file_picker_callback: filePickerCallback.bind(this)
+  }"
+  ></editor>
+</div>
+
+<!-- Media Picker Modal -->
+<!-- Media Picker Modal -->
+<div
+  *ngIf="showMediaModal"
+  class="fixed inset-0 flex items-start justify-center pt-24 z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">Select Image</h2>
+
+    <!-- Upload Button -->
+    <div class="mb-4">
+      <label
+        class="bg-blue-600 text-white px-3 py-1 rounded-sm text-sm cursor-pointer hover:bg-blue-700"
+      >
+        Upload New Image
+        <input type="file" (change)="onFileSelected($event)" hidden accept="image/*" />
+      </label>
+    </div>
+
+    <!-- Image Grid -->
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto"
+    >
+      <div
+        *ngFor="let media of mediaList"
+        class="border rounded-md overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-400"
+        [class.ring-4]="selectedUrl === media.fileUrl"
+        (click)="selectImage(media.fileUrl)"
+      >
+        <img [src]="media.fileUrl" alt="Media" class="w-full h-32 object-cover" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-6 flex justify-end space-x-3">
+      <button
+        (click)="closeModal()"
+        class="px-3 py-1 bg-gray-300 rounded-sm hover:bg-gray-400 text-sm"
+      >
+        Cancel
+      </button>
+      <button
+        (click)="confirmImage()"
+        [disabled]="!selectedUrl"
+        class="px-3 py-1 bg-blue-600 text-white rounded-sm hover:bg-blue-700 text-sm"
+      >
+        Insert
+      </button>
+    </div>
+  </div>
+</div>
+
