@@ -5,6 +5,9 @@ import {HttpClient} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
 import {MediaService} from "../service/media.service";
 import {ToastrService} from "ngx-toastr";
+import {News} from "../model/news";
+import {CategoryService} from "../service/configuration/category.service";
+import {NewsService} from "../service/configuration/news.service";
 
 @Component({
   selector: 'app-news',
@@ -25,18 +28,50 @@ export class NewsComponent implements OnInit{
   editorInstance: any;
   imageDialogOpen = false;
   private tinyCallback: ((url: string, meta?: any) => void) | null = null;
-
+  news:any = new News();
+  categories:any=[];
+  selectedFile: File | null = null;
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
-    private mediaService: MediaService,
+    private newsService: NewsService,
+    private mediaService: MediaService, private categoryService: CategoryService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.loadMedia();
+    this.getCategory();
   }
 
+  getCategory(){
+    this.categoryService.getCategory().subscribe((response:any)=>{
+      this.categories = response.data;
+    })
+  }
+  onFileSelectedFeatureImage(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      this.toastr.warning('Please select a file first');
+      return;
+    }
+
+    this.selectedFile = input.files[0]; // ✅ set the selected file
+
+    // Optionally, preview the image before upload
+    // const reader = new FileReader();
+    // reader.onload = () => this.previewUrl = reader.result as string;
+    // reader.readAsDataURL(this.selectedFile);
+
+    this.mediaService.upload(this.selectedFile).subscribe({
+      next: (res) => {
+        this.toastr.success('File uploaded successfully');
+        this.news.attachment_id = res.media?.id;
+      },
+      error: () => this.toastr.error('Upload failed')
+    });
+  }
   loadMedia() {
     this.mediaService.getAll().subscribe({
       next: (res: any[]) => {
@@ -125,5 +160,14 @@ export class NewsComponent implements OnInit{
     this.showMediaModal = false;
     this.selectedUrl = null;
     this.tinyCallback = null;
+  }
+
+  postNews() {
+    this.newsService.postNews(this.news).subscribe((response:any)=>{
+      if(response.status){
+        this.news = new News();
+        this.toastr.success(response.message);
+      }
+    })
   }
 }

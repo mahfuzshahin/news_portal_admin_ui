@@ -9,16 +9,20 @@ import {BasicUiElementComponent} from "./basic-ui-element/basic-ui-element.compo
 import {AuthGuard} from "./auth.guard";
 import {MediaComponent} from "./media/media.component";
 import {NewsComponent} from "./news/news.component";
+import {NewsListComponent} from "./news-list/news-list.component";
+import {NewsViewComponent} from "./news-view/news-view.component";
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'basic-form', component: BasicFormComponent },
-  { path: 'basic-table', component: BasicTableComponent },
-  { path: 'modal-ui', component: ModalUiComponent },
-  { path: 'basic-ui-element', component: BasicUiElementComponent },
+  { path: 'basic-form', component: BasicFormComponent, canActivate: [AuthGuard] },
+  { path: 'basic-table', component: BasicTableComponent, canActivate: [AuthGuard] },
+  { path: 'modal-ui', component: ModalUiComponent, canActivate: [AuthGuard] },
+  { path: 'basic-ui-element', component: BasicUiElementComponent, canActivate: [AuthGuard] },
   { path: 'category', component: CategoryComponent, canActivate: [AuthGuard] },
   { path: 'media', component: MediaComponent, canActivate: [AuthGuard] },
   { path: 'news', component: NewsComponent, canActivate: [AuthGuard] },
+  { path: 'news-list', component: NewsListComponent, canActivate: [AuthGuard] },
+  { path: 'news-view/:id', component: NewsViewComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
