@@ -26,4 +26,12 @@ export class NewsListComponent implements OnInit{
   viewNews(news: any) {
     this.router.navigate(['news-view', news.id])
   }
+
+  editNews(news: any) {
+
+  }
+
+  deleteNews(id:any) {
+
+  }
 }

@@ -31,6 +31,10 @@ export class NewsComponent implements OnInit{
   news:any = new News();
   categories:any=[];
   selectedFile: File | null = null;
+
+  currentMediaTarget: 'editor' | 'feature' | null = null;
+  selectedFeatureImage: string | null = null;
+  selectedFeatureAttachmentId: number | null = null;
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
@@ -90,39 +94,64 @@ export class NewsComponent implements OnInit{
       this.ngZone.run(() => {
         this.showMediaModal = true;
         this.tinyCallback = callback;
+        this.currentMediaTarget = 'editor';
       });
     }
   }
 
-  selectImage(url: string) {
+  selectImage(url: string, media:any) {
     this.selectedUrl = url;
+    this.selectedFeatureAttachmentId = media;
   }
 
   onEditorInit(event: any) {
     this.editorInstance = event.editor;
   }
   // 🔹 “Insert” button
-  confirmImage() {
+  confirmImageT2() {
     if (this.selectedUrl && this.editorInstance) {
       const editor = this.editorInstance;
-
-      // Insert the image
       editor.insertContent(
         `<img src="${this.selectedUrl}" alt="Selected image" style="max-width:100%;height:auto;" />`
       );
-
-      // Select the last inserted image
       const imgs = editor.dom.select('img');
       const lastImg = imgs[imgs.length - 1];
       editor.selection.select(lastImg);
-
-      // Open TinyMCE image dialog for resizing & advanced options
       editor.execCommand('mceImage');
-
       this.toastr.success('Image inserted!');
       this.closeModal();
     }
   }
+
+  confirmImage() {
+    if (!this.selectedUrl) return;
+    console.log(this.currentMediaTarget)
+    // ✅ CASE 1: Modal opened from Feature Image field
+    if (this.currentMediaTarget === 'feature') {
+      this.selectedFeatureImage = this.selectedUrl;
+      this.news.attachment_id = this.selectedFeatureAttachmentId;
+      this.toastr.success('Feature image selected!');
+      this.closeModal();
+      return;
+    }
+
+    // ✅ CASE 2: Modal opened from TinyMCE editor
+    if (this.currentMediaTarget === 'editor' && this.editorInstance) {
+      const editor = this.editorInstance;
+      editor.insertContent(
+        `<img src="${this.selectedUrl}" alt="Selected image" style="max-width:100%;height:auto;" />`
+      );
+
+      const imgs = editor.dom.select('img');
+      const lastImg = imgs[imgs.length - 1];
+      editor.selection.select(lastImg);
+      editor.execCommand('mceImage');
+
+      this.toastr.success('Image inserted into editor!');
+      this.closeModal();
+    }
+  }
+
   confirmImageT() {
     if (this.selectedUrl && this.editorInstance) {
       this.ngZone.run(() => {
@@ -160,14 +189,29 @@ export class NewsComponent implements OnInit{
     this.showMediaModal = false;
     this.selectedUrl = null;
     this.tinyCallback = null;
+    this.currentMediaTarget = null;
   }
 
   postNews() {
-    this.newsService.postNews(this.news).subscribe((response:any)=>{
+    console.log(this.selectedFeatureAttachmentId)
+    const payload = {
+      ...this.news,
+      attachment_id: this.selectedFeatureAttachmentId, // ✅ send attachment ID
+    };
+    this.newsService.postNews(payload).subscribe((response:any)=>{
       if(response.status){
         this.news = new News();
         this.toastr.success(response.message);
       }
     })
+  }
+
+  openFeatureImageModal() {
+    this.currentMediaTarget = 'feature';
+    this.showMediaModal = true;
+  }
+  removeFeatureImage(event: Event) {
+    event.stopPropagation();
+    this.selectedFeatureImage = null;
   }
 }

@@ -13,12 +13,12 @@ import {ToastrService} from "ngx-toastr";
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username = '';
+  email = '';
   password = '';
   errorMessage = '';
   constructor(private router: Router, private authService: AuthService, private toastr: ToastrService) {}
   login() {
-    const credentials = { username: this.username, password: this.password };
+    const credentials = { email: this.email, password: this.password };
     this.authService.login(credentials).subscribe({
       next: (res) => {
         if (res.data) {

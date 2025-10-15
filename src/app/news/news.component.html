@@ -54,10 +54,39 @@
           </select>
         </div>
       </div>
+<!--      <div>-->
+<!--        <label for="attachment_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Feature Image</label>-->
+<!--        <input type="file" name="attachment_id" id="attachment_id" (change)="onFileSelectedFeatureImage($event)" accept="image/*">-->
+<!--      </div>-->
       <div>
-        <label for="attachment_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Feature Image</label>
-        <input type="file" name="attachment_id" id="attachment_id" (change)="onFileSelectedFeatureImage($event)" accept="image/*">
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Feature Image</label>
+
+        <!-- Preview Box -->
+        <div
+          class="relative w-48 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 transition"
+          (click)="openFeatureImageModal()"
+        >
+          <ng-container *ngIf="selectedFeatureImage; else uploadPlaceholder">
+            <img
+              [src]="selectedFeatureImage"
+              alt="Feature Image"
+              class="w-full h-full object-cover rounded-lg"
+            />
+            <button
+              type="button"
+              (click)="removeFeatureImage($event)"
+              class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+            >
+              ✕
+            </button>
+          </ng-container>
+
+          <ng-template #uploadPlaceholder>
+            <span class="text-gray-400 text-sm">Click to Select Image</span>
+          </ng-template>
+        </div>
       </div>
+
       <div class="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
         <button type="submit" (click)="postNews()"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-150">
@@ -93,7 +122,7 @@
         *ngFor="let media of mediaList"
         class="border rounded-md overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-400"
         [class.ring-4]="selectedUrl === media.fileUrl"
-        (click)="selectImage(media.fileUrl)"
+        (click)="selectImage(media.fileUrl, media.id)"
       >
         <img [src]="media.fileUrl" alt="Media" class="w-full h-32 object-cover" />
       </div>
