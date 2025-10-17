@@ -28,7 +28,7 @@ export class NewsListComponent implements OnInit{
   }
 
   editNews(news: any) {
-
+    this.router.navigate(['edit-news', news.id])
   }
 
   deleteNews(id:any) {

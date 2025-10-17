@@ -1,19 +1,18 @@
+// media.service.ts
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {catchError, Observable, of} from "rxjs";
-import {News} from "../../model/news";
-import {AuthService} from "../auth.service";
-import {environment} from "../../../environment/environment";
-import {ToastrService} from "ngx-toastr";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from './auth.service';
+import {environment} from "../../environment/environment";
+import {Gallery} from "../model/gallery";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class NewsService {
-
+@Injectable({ providedIn: 'root' })
+export class GalleryService {
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
-  getNews() {
-    return this.httpClient.get<any>('http://localhost:3000/api/news' ).pipe(
+  getGallery() {
+    return this.httpClient.get<any>('http://localhost:3000/api/news-gallery' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {
@@ -25,26 +24,15 @@ export class NewsService {
       })
     );
   }
-  getViewNews(id:any){
-    return this.httpClient.get(environment.api_url +'/news/find?id='+
-      id).pipe(catchError((error: any, caught: Observable<any>): Observable<any> => {
-      if(error.status === 406){
-        this.toastr.warning(error.error.message);
-      }else{
-        this.toastr.error(error.error.error);
-      }
-      return of(error.error);
-    }));
-  }
 
-  postNews(news: News){
+  postGallery(gallery: Gallery){
     const headers = this.authService.getAuthHeaders(true);
     if (!headers) {
       this.toastr.error('You are not authenticated.');
       return of(null);
     }
-    const body=JSON.stringify(news);
-    return this.httpClient.post(environment.api_url +'/news', body,{headers}).pipe(catchError((error:any, caught:Observable<any>):Observable<any> =>{
+    const body=JSON.stringify(gallery);
+    return this.httpClient.post(environment.api_url +'/news-gallery', body,{headers}).pipe(catchError((error:any, caught:Observable<any>):Observable<any> =>{
       if(error.status === 406){
         this.toastr.warning(error.error.message);
       }else{
@@ -54,22 +42,14 @@ export class NewsService {
     }))
   }
 
-  putNews(news: {
-    categoryIds: any;
-    tagIds: any;
-    publishAt: any;
-    attachment_id: number | null;
-    title: any;
-    content: any;
-    status: any
-  }, id: any){
+  putGallery(gallery: Gallery, id:any){
     const headers = this.authService.getAuthHeaders(true);
     if (!headers) {
       this.toastr.error('You are not authenticated.');
       return of(null);
     }
-    const body = JSON.stringify(news);
-    return this.httpClient.put<any>(`${environment.api_url}/news/${id}`,body,{headers}).pipe(catchError((error:any, caught:Observable<any>):Observable<any> =>{
+    const body = JSON.stringify(gallery);
+    return this.httpClient.put<any>(`${environment.api_url}/news-gallery/${id}`,body,{headers}).pipe(catchError((error:any, caught:Observable<any>):Observable<any> =>{
       if(error.status === 406){
         this.toastr.warning(error.error.message);
       }else{
@@ -78,26 +58,25 @@ export class NewsService {
       return of();
     }))
   }
-  deleteNews(id: number) {
+  deleteGallery(id: number) {
     const headers = this.authService.getAuthHeaders(true);
     if (!headers) {
       this.toastr.error('You are not authenticated.');
       return of(null); // return observable to avoid TS error
     }
 
-    return this.httpClient.delete(`${environment.api_url}/news/${id}`, { headers }).pipe(
+    return this.httpClient.delete(`${environment.api_url}/news-gallery/${id}`, { headers }).pipe(
       catchError((error: any) => {
         console.log(error)
         if (error.status === 404) {
-          this.toastr.error('News not found');
+          this.toastr.error('Gallery not found');
         } else if (error.status === 401) {
           this.toastr.error('Unauthorized. Please login again.');
         } else {
-          this.toastr.error(error.error?.message || 'Failed to delete news');
+          this.toastr.error(error.error?.message || 'Failed to delete gallery');
         }
         return of(null);
       })
     );
   }
-
 }

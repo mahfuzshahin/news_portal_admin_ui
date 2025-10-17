@@ -12,6 +12,7 @@ import {NewsComponent} from "./news/news.component";
 import {NewsListComponent} from "./news-list/news-list.component";
 import {NewsViewComponent} from "./news-view/news-view.component";
 import {TagComponent} from "./tag/tag.component";
+import {EditNewsComponent} from "./edit-news/edit-news.component";
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -26,5 +27,6 @@ export const routes: Routes = [
   { path: 'news', component: NewsComponent, canActivate: [AuthGuard] },
   { path: 'news-list', component: NewsListComponent, canActivate: [AuthGuard] },
   { path: 'news-view/:id', component: NewsViewComponent, canActivate: [AuthGuard] },
+  { path: 'edit-news/:id', component: EditNewsComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

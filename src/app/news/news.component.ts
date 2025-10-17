@@ -8,15 +8,18 @@ import {ToastrService} from "ngx-toastr";
 import {News} from "../model/news";
 import {CategoryService} from "../service/configuration/category.service";
 import {NewsService} from "../service/configuration/news.service";
+import {NgSelectModule} from "@ng-select/ng-select";
+import {TagService} from "../service/configuration/tag.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-news',
   standalone: true,
-    imports: [
-        EditorComponent,
-        FormsModule,
-        ReactiveFormsModule, CommonModule
-    ],
+  imports: [
+    EditorComponent,
+    FormsModule,
+    ReactiveFormsModule, CommonModule, NgSelectModule
+  ],
   templateUrl: './news.component.html',
   styleUrl: './news.component.css'
 })
@@ -30,6 +33,7 @@ export class NewsComponent implements OnInit{
   private tinyCallback: ((url: string, meta?: any) => void) | null = null;
   news:any = new News();
   categories:any=[];
+  tags:any=[];
   selectedFile: File | null = null;
 
   currentMediaTarget: 'editor' | 'feature' | null = null;
@@ -40,12 +44,15 @@ export class NewsComponent implements OnInit{
     private toastr: ToastrService,
     private newsService: NewsService,
     private mediaService: MediaService, private categoryService: CategoryService,
+    private router: Router,
+    private tagService: TagService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.loadMedia();
     this.getCategory();
+    this.getTag();
   }
 
   getCategory(){
@@ -53,6 +60,12 @@ export class NewsComponent implements OnInit{
       this.categories = response.data;
     })
   }
+  getTag(){
+    this.tagService.getTag().subscribe((response:any)=>{
+      this.tags = response.data;
+    })
+  }
+
   onFileSelectedFeatureImage(event: Event): void {
     const input = event.target as HTMLInputElement;
 
@@ -196,12 +209,15 @@ export class NewsComponent implements OnInit{
     console.log(this.selectedFeatureAttachmentId)
     const payload = {
       ...this.news,
-      attachment_id: this.selectedFeatureAttachmentId, // ✅ send attachment ID
+      attachment_id: this.selectedFeatureAttachmentId,
+      categoryIds: this.news.categoryIds || [],
+      tagIds: this.news.tagIds || [],
+      status: 'draft',
     };
     this.newsService.postNews(payload).subscribe((response:any)=>{
       if(response.status){
-        this.news = new News();
         this.toastr.success(response.message);
+        this.router.navigate(['edit-news', response.data.id])
       }
     })
   }
