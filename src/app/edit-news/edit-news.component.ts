@@ -13,6 +13,7 @@ import {ToastrService} from "ngx-toastr";
 import {Media} from "../model/media";
 import {MediaService} from "../service/media.service";
 import {NewsGalleryComponent} from "../news-gallery/news-gallery.component";
+import {NewsVideoComponent} from "../news-video/news-video.component";
 
 @Component({
   selector: 'app-edit-news',
@@ -25,7 +26,8 @@ import {NewsGalleryComponent} from "../news-gallery/news-gallery.component";
     NgIf,
     NgSelectModule,
     ReactiveFormsModule,
-    NewsGalleryComponent
+    NewsGalleryComponent,
+    NewsVideoComponent
   ],
   templateUrl: './edit-news.component.html',
   styleUrl: './edit-news.component.css'

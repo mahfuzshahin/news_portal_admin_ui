@@ -148,6 +148,7 @@
     </form>
   </section>
   <app-news-gallery *ngIf="news.id" [news]="news"></app-news-gallery>
+  <app-news-video *ngIf="news.id" [news]="news"></app-news-video>
 </div>
 <div
   *ngIf="showMediaModal"
