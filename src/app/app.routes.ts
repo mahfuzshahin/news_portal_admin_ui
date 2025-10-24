@@ -13,6 +13,7 @@ import {NewsListComponent} from "./news-list/news-list.component";
 import {NewsViewComponent} from "./news-view/news-view.component";
 import {TagComponent} from "./tag/tag.component";
 import {EditNewsComponent} from "./edit-news/edit-news.component";
+import {AuthorComponent} from "./author/author.component";
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'basic-ui-element', component: BasicUiElementComponent, canActivate: [AuthGuard] },
   { path: 'category', component: CategoryComponent, canActivate: [AuthGuard] },
   { path: 'tag', component: TagComponent, canActivate: [AuthGuard] },
+  { path: 'author', component: AuthorComponent, canActivate: [AuthGuard] },
   { path: 'media', component: MediaComponent, canActivate: [AuthGuard] },
   { path: 'news', component: NewsComponent, canActivate: [AuthGuard] },
   { path: 'news-list', component: NewsListComponent, canActivate: [AuthGuard] },
