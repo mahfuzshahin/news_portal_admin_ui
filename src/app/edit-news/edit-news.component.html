@@ -34,7 +34,7 @@
           }"
         ></editor>
       </div>
-      <div class="grid md:grid-cols-2 md:gap-6">
+      <div class="grid md:grid-cols-3 md:gap-6">
         <div>
           <label for="categoryIds" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Categories
@@ -69,6 +69,23 @@
             placeholder="Select Tags"
             class="text-sm w-full"
           >
+          </ng-select>
+        </div>
+
+        <div class="mb-5">
+          <label for="author_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Author
+          </label>
+          <ng-select
+            id="author_id"
+            name="author_id"
+            [(ngModel)]="news.author_id"
+            placeholder="Select an author"
+            class="text-gray-900 text-sm rounded-lg focus:ring-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+            <ng-option *ngFor="let author of authors" [value]="author.id">
+              {{ author.name }}
+            </ng-option>
           </ng-select>
         </div>
       </div>

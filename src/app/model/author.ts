@@ -3,6 +3,5 @@ export class Author {
   name: string | undefined;
   email: string | undefined;
   designation: string | undefined;
-  newsId: string | undefined;
   attachment_id: number | undefined;
 }

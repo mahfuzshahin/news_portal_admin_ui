@@ -1,18 +1,15 @@
-import {Component, NgZone, OnInit} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {AuthorService} from "../service/configuration/author.service";
 import {Author} from "../model/author";
 import {EditorComponent} from "@tinymce/tinymce-angular";
 import {NgSelectModule} from "@ng-select/ng-select";
-import {News} from "../model/news";
 import {HttpClient} from "@angular/common/http";
-import {ToastrService} from "ngx-toastr";
 import {NewsService} from "../service/configuration/news.service";
 import {MediaService} from "../service/media.service";
-import {CategoryService} from "../service/configuration/category.service";
 import {Router} from "@angular/router";
-import {TagService} from "../service/configuration/tag.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-author',
@@ -29,6 +26,7 @@ import {TagService} from "../service/configuration/tag.service";
   styleUrl: './author.component.css'
 })
 export class AuthorComponent implements OnInit{
+  @ViewChild('myForm') form: NgForm | undefined;
   content = '';
   showMediaModal = false;
   mediaList: any[] = [];
@@ -36,9 +34,6 @@ export class AuthorComponent implements OnInit{
   editorInstance: any;
   imageDialogOpen = false;
   private tinyCallback: ((url: string, meta?: any) => void) | null = null;
-  news:any = new News();
-  categories:any=[];
-  tags:any=[];
   selectedFile: File | null = null;
 
   currentMediaTarget: 'editor' | 'feature' | null = null;
@@ -48,21 +43,20 @@ export class AuthorComponent implements OnInit{
   author:any = new Author();
   authors:any=[];
   isAuthorView: boolean = false;
+  isSaveButton:boolean = true;
+  isUpdateButton:boolean = false;
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
     private authorService: AuthorService,
     private newsService: NewsService,
-    private mediaService: MediaService, private categoryService: CategoryService,
+    private mediaService: MediaService,
     private router: Router,
-    private tagService: TagService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.loadMedia();
-    this.getCategory();
-    this.getTag();
     this.getAuthor();
   }
 
@@ -70,41 +64,6 @@ export class AuthorComponent implements OnInit{
     this.authorService.getAuthor().subscribe((response:any)=>{
       this.authors = response.data;
     })
-  }
-
-  getCategory(){
-    this.categoryService.getCategory().subscribe((response:any)=>{
-      this.categories = response.data;
-    })
-  }
-  getTag(){
-    this.tagService.getTag().subscribe((response:any)=>{
-      this.tags = response.data;
-    })
-  }
-
-  onFileSelectedFeatureImage(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files || input.files.length === 0) {
-      this.toastr.warning('Please select a file first');
-      return;
-    }
-
-    this.selectedFile = input.files[0]; // ✅ set the selected file
-
-    // Optionally, preview the image before upload
-    // const reader = new FileReader();
-    // reader.onload = () => this.previewUrl = reader.result as string;
-    // reader.readAsDataURL(this.selectedFile);
-
-    this.mediaService.upload(this.selectedFile).subscribe({
-      next: (res) => {
-        this.toastr.success('File uploaded successfully');
-        this.news.attachment_id = res.media?.id;
-      },
-      error: () => this.toastr.error('Upload failed')
-    });
   }
   loadMedia() {
     this.mediaService.getAll().subscribe({
@@ -139,28 +98,13 @@ export class AuthorComponent implements OnInit{
   }
   // 🔹 “Insert” button
 
-  confirmImageT2() {
-    if (this.selectedUrl && this.editorInstance) {
-      const editor = this.editorInstance;
-      editor.insertContent(
-        `<img src="${this.selectedUrl}" alt="Selected image" style="max-width:100%;height:auto;" />`
-      );
-      const imgs = editor.dom.select('img');
-      const lastImg = imgs[imgs.length - 1];
-      editor.selection.select(lastImg);
-      editor.execCommand('mceImage');
-      this.toastr.success('Image inserted!');
-      this.closeModal();
-    }
-  }
-
   confirmImage() {
     if (!this.selectedUrl) return;
     console.log(this.currentMediaTarget)
     // ✅ CASE 1: Modal opened from Feature Image field
     if (this.currentMediaTarget === 'feature') {
       this.selectedFeatureImage = this.selectedUrl;
-      this.news.attachment_id = this.selectedFeatureAttachmentId;
+      this.author.attachment_id = this.selectedFeatureAttachmentId;
       this.toastr.success('Feature image selected!');
       this.closeModal();
       return;
@@ -183,19 +127,6 @@ export class AuthorComponent implements OnInit{
     }
   }
 
-  confirmImageT() {
-    if (this.selectedUrl && this.editorInstance) {
-      this.ngZone.run(() => {
-        // Insert image as TinyMCE object so resizing works
-        this.editorInstance.insertContent(
-          `<img src="${this.selectedUrl}" alt="Selected image" class="mce-object" style="max-width:100%;height:auto;" />`
-        );
-
-        this.toastr.success('Image inserted!');
-        this.closeModal();
-      });
-    }
-  }
 
 
   onFileSelected(event: any) {
@@ -223,22 +154,6 @@ export class AuthorComponent implements OnInit{
     this.currentMediaTarget = null;
   }
 
-  postNews() {
-    console.log(this.selectedFeatureAttachmentId)
-    const payload = {
-      ...this.news,
-      attachment_id: this.selectedFeatureAttachmentId,
-      categoryIds: this.news.categoryIds || [],
-      tagIds: this.news.tagIds || [],
-      status: 'draft',
-    };
-    this.newsService.postNews(payload).subscribe((response:any)=>{
-      if(response.status){
-        this.toastr.success(response.message);
-        this.router.navigate(['edit-news', response.data.id])
-      }
-    })
-  }
 
   openFeatureImageModal() {
     this.currentMediaTarget = 'feature';
@@ -250,20 +165,29 @@ export class AuthorComponent implements OnInit{
   }
 
   postAuthor() {
-    console.log(this.selectedFeatureAttachmentId)
     const payload = {
       ...this.author,
       attachment_id: this.selectedFeatureAttachmentId,
     };
+
     this.authorService.postAuthor(payload).subscribe((response:any)=>{
       if(response.status){
         this.toastr.success(response.message);
         this.authors.push(response.data);
+        this.author = new Author();
+        this.form?.resetForm(this.author);
+        this.isAuthorView = false;
       }
     })
   }
 
   editAuthor(value: any) {
+    this.isAuthorView = true;
+    this.isUpdateButton = false;
+    this.isSaveButton = false;
+    this.author= value;
+    this.author.attachment_id = value.attachment?.id || null;
+    this.selectedFeatureImage = value.profileImage || null;
 
   }
 
@@ -278,5 +202,26 @@ export class AuthorComponent implements OnInit{
   cancel() {
     this.isAuthorView = false;
     this.author = new Author();
+  }
+
+  putAuthor() {
+    const payload = {
+      id: this.author.id,
+      name: this.author.name,
+      email: this.author.email,
+      designation: this.author.designation,
+      attachment_id: this.selectedFeatureAttachmentId || this.author.attachment_id,
+    };
+    this.authorService.putAuthor(payload, this.author.id).subscribe((response:any)=>{
+      if(response.status){
+        let indexToUpdate = this.authors.findIndex((item: Author) => item.id === this.author.id);
+        this.authors[indexToUpdate] = response.data;
+        this.author = new Author();
+        this.form?.resetForm(this.author);
+        this.isUpdateButton = false;
+        this.isSaveButton = true;
+        this.isAuthorView = false;
+      }
+    })
   }
 }

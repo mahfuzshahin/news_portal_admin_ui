@@ -14,6 +14,7 @@ import {Media} from "../model/media";
 import {MediaService} from "../service/media.service";
 import {NewsGalleryComponent} from "../news-gallery/news-gallery.component";
 import {NewsVideoComponent} from "../news-video/news-video.component";
+import {AuthorService} from "../service/configuration/author.service";
 
 @Component({
   selector: 'app-edit-news',
@@ -37,6 +38,7 @@ export class EditNewsComponent implements OnInit{
   editorInstance: any;
   categories:any=[];
   tags:any=[];
+  authors:any=[];
   showMediaModal:boolean = false;
   private tinyCallback: ((url: string, meta?: any) => void) | null = null;
   currentMediaTarget: 'editor' | 'feature' | null = null;
@@ -46,6 +48,7 @@ export class EditNewsComponent implements OnInit{
   selectedUrl: string | null = null;
   constructor(private newsService: NewsService, private mediaService: MediaService,
               private categoryService: CategoryService, private tagService: TagService,
+              private authorService: AuthorService,
               private route: ActivatedRoute, private ngZone: NgZone, private http: HttpClient, private toastr: ToastrService) {
   }
   ngOnInit() {
@@ -53,6 +56,12 @@ export class EditNewsComponent implements OnInit{
     this.loadMedia();
     this.getCategory();
     this.getTag();
+    this.getAuthor();
+  }
+  getAuthor(){
+    this.authorService.getAuthor().subscribe((response:any)=>{
+      this.authors = response.data;
+    })
   }
   viewNews(){
     this.route.params.subscribe((params)=>{
@@ -62,6 +71,7 @@ export class EditNewsComponent implements OnInit{
         this.news.categoryIds = response.data.categories.map((cat: any) => cat.id) || [];
         this.news.tagIds = response.data.tags.map((tag: any) => tag.id) || [];
         this.news.attachment_id = response.data.attachment.id;
+        this.news.author_id = response.data?.author?.id;
         // this.selectedFeatureImage = `http://localhost:3000/uploads/${response.data.attachment.filePath}`;
         if (response.data.attachment) {
           this.news.attachment_id = response.data.attachment.id;
@@ -113,6 +123,7 @@ export class EditNewsComponent implements OnInit{
       categoryIds: this.news.categoryIds || [],
       tagIds: this.news.tagIds || [],
       attachment_id: this.selectedFeatureAttachmentId || this.news.attachment_id,
+      author_id: this.news.author_id,
       isFeatured: this.news.isFeatured,
       isBreaking: this.news.isBreaking,
     };

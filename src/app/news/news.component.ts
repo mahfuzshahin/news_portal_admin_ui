@@ -11,6 +11,7 @@ import {NewsService} from "../service/configuration/news.service";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {TagService} from "../service/configuration/tag.service";
 import {Router} from "@angular/router";
+import {AuthorService} from "../service/configuration/author.service";
 
 @Component({
   selector: 'app-news',
@@ -34,6 +35,7 @@ export class NewsComponent implements OnInit{
   news:any = new News();
   categories:any=[];
   tags:any=[];
+  authors:any=[];
   selectedFile: File | null = null;
 
   currentMediaTarget: 'editor' | 'feature' | null = null;
@@ -42,7 +44,7 @@ export class NewsComponent implements OnInit{
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
-    private newsService: NewsService,
+    private newsService: NewsService, private authorService: AuthorService,
     private mediaService: MediaService, private categoryService: CategoryService,
     private router: Router,
     private tagService: TagService,
@@ -53,8 +55,14 @@ export class NewsComponent implements OnInit{
     this.loadMedia();
     this.getCategory();
     this.getTag();
+    this.getAuthor();
   }
 
+  getAuthor(){
+    this.authorService.getAuthor().subscribe((response:any)=>{
+      this.authors = response.data;
+    })
+  }
   getCategory(){
     this.categoryService.getCategory().subscribe((response:any)=>{
       this.categories = response.data;
@@ -65,6 +73,7 @@ export class NewsComponent implements OnInit{
       this.tags = response.data;
     })
   }
+
 
   onFileSelectedFeatureImage(event: Event): void {
     const input = event.target as HTMLInputElement;
