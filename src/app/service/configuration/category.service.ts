@@ -13,7 +13,7 @@ export class CategoryService {
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
   getCategory() {
-    return this.httpClient.get<any>('http://localhost:3000/api/category' ).pipe(
+    return this.httpClient.get<any>(environment.api_url+'/category' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {
