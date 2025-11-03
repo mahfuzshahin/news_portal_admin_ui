@@ -13,7 +13,7 @@ export class TagService {
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
   getTag() {
-    return this.httpClient.get<any>('http://localhost:3000/api/tag' ).pipe(
+    return this.httpClient.get<any>(environment.api_url+'/tag' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {

@@ -13,7 +13,7 @@ export class NewsService {
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
   getNews() {
-    return this.httpClient.get<any>('http://localhost:3000/api/news' ).pipe(
+    return this.httpClient.get<any>(environment.api_url+'/news' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {

@@ -13,7 +13,7 @@
     <div *ngFor="let media of mediaList" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 flex flex-col items-center relative shadow-sm rounded-sm hover:shadow-md transition-shadow">
 
       <!-- Image -->
-      <img *ngIf="media.type === 'image'" [src]="media.fileUrl" alt="Image" class="w-full h-40 object-cover mb-2 rounded-sm border border-gray-300 dark:border-gray-600">
+      <img *ngIf="media.type === 'image'" [src]="media.url" alt="Image" class="w-full h-40 object-cover mb-2 rounded-sm border border-gray-300 dark:border-gray-600">
 
       <!-- Filename -->
       <p class="text-sm text-gray-700 dark:text-gray-300 truncate w-full text-center">{{ media.filePath | slice: -20 }}</p>

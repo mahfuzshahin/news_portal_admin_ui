@@ -12,7 +12,7 @@ import {environment} from "../../../environment/environment";
 export class VideoService {
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
   getVideo() {
-    return this.httpClient.get<any>('http://localhost:3000/api/newsVideo' ).pipe(
+    return this.httpClient.get<any>(environment.api_url+'/newsVideo' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {

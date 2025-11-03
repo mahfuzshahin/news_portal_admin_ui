@@ -10,6 +10,7 @@ import {NewsService} from "../service/configuration/news.service";
 import {MediaService} from "../service/media.service";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-author',
@@ -66,14 +67,8 @@ export class AuthorComponent implements OnInit{
     })
   }
   loadMedia() {
-    this.mediaService.getAll().subscribe({
-      next: (res: any[]) => {
-        this.mediaList = res.map((m: any) => ({
-          ...m,
-          fileUrl: `http://localhost:3000/uploads/${m.filePath}`,
-        }));
-      },
-      error: () => this.toastr.error('Failed to load media'),
+    this.mediaService.getAll().subscribe((response:any)=>{
+      this.mediaList = response.data;
     });
   }
 
@@ -137,7 +132,7 @@ export class AuthorComponent implements OnInit{
     formData.append('file', file);
 
     this.http
-      .post<any>('http://localhost:3000/api/media/upload', formData)
+      .post<any>(environment.api_url+'/media/upload', formData)
       .subscribe({
         next: () => {
           this.toastr.success('Image uploaded!');

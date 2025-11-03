@@ -154,14 +154,8 @@ export class EditNewsComponent implements OnInit{
       });
   }
   loadMedia() {
-    this.mediaService.getAll().subscribe({
-      next: (res: any[]) => {
-        this.mediaList = res.map((m: any) => ({
-          ...m,
-          fileUrl: `http://localhost:3000/uploads/${m.filePath}`,
-        }));
-      },
-      error: () => this.toastr.error('Failed to load media'),
+    this.mediaService.getAll().subscribe((response:any)=>{
+      this.mediaList = response.data;
     });
   }
   selectImage(url: string, media:any) {

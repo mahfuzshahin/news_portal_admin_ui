@@ -180,10 +180,10 @@
       <div
         *ngFor="let media of mediaList"
         class="border rounded-md overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-400"
-        [class.ring-4]="selectedUrl === media.fileUrl"
-        (click)="selectImage(media.fileUrl, media.id)"
+        [class.ring-4]="selectedUrl === media.url"
+        (click)="selectImage(media.url, media.id)"
       >
-        <img [src]="media.fileUrl" alt="Media" class="w-full h-32 object-cover" />
+        <img [src]="media.url" alt="Media" class="w-full h-32 object-cover" />
       </div>
     </div>
 

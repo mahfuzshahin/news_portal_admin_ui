@@ -3,6 +3,7 @@ import {MediaService} from "../service/media.service";
 import {ToastrService} from "ngx-toastr";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-media',
@@ -55,14 +56,8 @@ export class MediaComponent implements OnInit{
     });
   }
   loadMedia() {
-    this.mediaService.getAll().subscribe({
-      next: (res: any[]) => {
-        this.mediaList = res.map((m: any) => ({
-          ...m,
-          fileUrl: `http://localhost:3000/uploads/${m.filePath}`
-        }));
-      },
-      error: () => this.toastr.error('Failed to load media')
+    this.mediaService.getAll().subscribe((response:any)=>{
+      this.mediaList = response.data;
     });
   }
   deleteMedia(id: number) {

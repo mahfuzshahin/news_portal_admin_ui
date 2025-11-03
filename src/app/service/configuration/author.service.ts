@@ -13,7 +13,7 @@ export class AuthorService {
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
   getAuthor() {
-    return this.httpClient.get<any>('http://localhost:3000/api/author' ).pipe(
+    return this.httpClient.get<any>(environment.api_url+'/author' ).pipe(
       catchError((error: any): Observable<any> => {
         console.log(error)
         if (error.status === 404) {
