@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Gallery} from "../model/gallery";
 import {HttpClient} from "@angular/common/http";
 import {GalleryService} from "../service/gallery.service";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-news-gallery',
@@ -41,14 +42,8 @@ export class NewsGalleryComponent implements OnInit{
     this.loadMedia();
   }
   loadMedia() {
-    this.mediaService.getAll().subscribe({
-      next: (res: any[]) => {
-        this.mediaList = res.map((m: any) => ({
-          ...m,
-          fileUrl: `http://localhost:3000/uploads/${m.filePath}`,
-        }));
-      },
-      error: () => this.toastr.error('Failed to load media'),
+    this.mediaService.getAll().subscribe((response:any)=>{
+      this.mediaList = response.data;
     });
   }
   openFeatureImageModal() {
@@ -68,7 +63,7 @@ export class NewsGalleryComponent implements OnInit{
     formData.append('file', file);
 
     this.http
-      .post<any>('http://localhost:3000/api/media/upload', formData)
+      .post<any>(environment.api_url+'/media/upload', formData)
       .subscribe({
         next: () => {
           this.toastr.success('Image uploaded!');

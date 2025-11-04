@@ -2,7 +2,7 @@
 <!--  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Video Management</h1>-->
 
   <!-- Card Container -->
-  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
 
     <!-- Card Header -->
     <div class="px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
@@ -10,7 +10,7 @@
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Videos</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400">Manage videos and their status</p>
       </div>
-      <button (click)="openModal()" class="bg-blue-600 text-white px-5 py-2 rounded-sm hover:bg-blue-700 transition-all shadow">
+      <button (click)="openModal()" class="text-sm px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
         Add Video
       </button>
     </div>
@@ -48,7 +48,7 @@
 
 <!-- Modal -->
 <div *ngIf="modalOpen" class="fixed inset-0 z-50 flex justify-center items-start pt-24 bg-black/30">
-  <div class="bg-white dark:bg-gray-900 rounded-xl w-full max-w-md p-8 shadow-2xl border border-gray-200 dark:border-gray-700 pointer-events-auto animate-fadeIn">
+  <div class="bg-white dark:bg-gray-900 rounded-lg w-full max-w-md p-8 shadow-2xl border border-gray-200 dark:border-gray-700 pointer-events-auto animate-fadeIn">
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add Video</h2>
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Fill in the details to add a new video</p>
 

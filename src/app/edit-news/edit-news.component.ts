@@ -15,6 +15,7 @@ import {MediaService} from "../service/media.service";
 import {NewsGalleryComponent} from "../news-gallery/news-gallery.component";
 import {NewsVideoComponent} from "../news-video/news-video.component";
 import {AuthorService} from "../service/configuration/author.service";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-edit-news',
@@ -72,10 +73,9 @@ export class EditNewsComponent implements OnInit{
         this.news.tagIds = response.data.tags.map((tag: any) => tag.id) || [];
         this.news.attachment_id = response.data.attachment.id;
         this.news.author_id = response.data?.author?.id;
-        // this.selectedFeatureImage = `http://localhost:3000/uploads/${response.data.attachment.filePath}`;
         if (response.data.attachment) {
           this.news.attachment_id = response.data.attachment.id;
-          this.selectedFeatureImage = `http://localhost:3000/uploads/${response.data.attachment.filePath}`;
+          this.selectedFeatureImage = response?.data?.attachmentUrl;
         } else {
           this.news.attachment_id = null;
           this.selectedFeatureImage = null;
@@ -144,7 +144,7 @@ export class EditNewsComponent implements OnInit{
     formData.append('file', file);
 
     this.http
-      .post<any>('http://localhost:3000/api/media/upload', formData)
+      .post<any>(environment.api_url+'/media/upload', formData)
       .subscribe({
         next: () => {
           this.toastr.success('Image uploaded!');

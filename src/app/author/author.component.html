@@ -1,7 +1,7 @@
 <div class="p-4">
   <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Author Management</h1>
   <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Use this form to add a new News to the system.</p>
-  <section class="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full" *ngIf="isAuthorView">
+  <section class="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-2xl border border-gray-100 dark:border-gray-700 w-full" *ngIf="isAuthorView">
     <form #myForm="ngForm" class="space-y-6" action="#">
       <div class="flex flex-wrap -mx-2 mb-5">
         <!-- Name -->
@@ -109,7 +109,7 @@
     </form>
   </section>
 
-  <section class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full">
+  <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-2xl border border-gray-100 dark:border-gray-700 w-full">
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Author List
       <button (click)="addAuthorView()"
               class="text-sm px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition float-right">

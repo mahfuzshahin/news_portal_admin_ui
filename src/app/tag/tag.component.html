@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Tag Management</h1>
 
   <!-- Card Container -->
-  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
 
     <!-- Card Header -->
     <div class="px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
@@ -10,7 +10,7 @@
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Tags</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400">Manage tags and their status</p>
       </div>
-      <button (click)="openModal()" class="bg-blue-600 text-white px-5 py-2 rounded-sm hover:bg-blue-700 transition-all shadow">
+      <button (click)="openModal()" class="bg-blue-600 text-white px-2 py-1 rounded-sm hover:bg-blue-700 transition-all shadow">
         Add Tag
       </button>
     </div>
@@ -18,25 +18,35 @@
     <!-- Tag Table -->
     <div class="overflow-x-auto">
       <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300">
-        <thead class="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase text-xs font-semibold">
+        <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-xs font-semibold uppercase tracking-wide">
         <tr>
-          <th class="px-6 py-3 rounded-tl-lg">Name</th>
-          <th class="px-6 py-3">Description</th>
-          <th class="px-6 py-3">Active</th>
-          <th class="px-6 py-3 text-right rounded-tr-lg">Actions</th>
+          <th class="px-5 py-3">Name</th>
+          <th class="px-5 py-3">Description</th>
+          <th class="px-5 py-3">Status</th>
+          <th class="px-5 py-3 text-right">Actions</th>
         </tr>
         </thead>
-        <tbody>
-        <tr *ngFor="let value of tags" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-sm">
-          <td class="px-6 py-3 font-medium text-gray-900 dark:text-white">{{ value.name }}</td>
-          <td class="px-6 py-3">{{ value.description || '-' }}</td>
-          <td class="px-6 py-3">
-            <span *ngIf="value.active" class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
-            <span *ngIf="!value.active" class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full dark:bg-red-900 dark:text-red-300">Inactive</span>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+        <tr *ngFor="let value of tags" class="hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
+          <td class="px-5 py-3 font-medium text-gray-900 dark:text-white">{{ value.name }}</td>
+          <td class="px-5 py-3 text-gray-500 dark:text-gray-400">{{ value.description || '-' }}</td>
+          <td class="px-5 py-3">
+            <span *ngIf="value.active" class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-medium px-3 py-1 rounded-full dark:bg-green-900/40 dark:text-green-300">
+              <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+              Active
+            </span>
+            <span *ngIf="!value.active" class="inline-flex items-center gap-1.5 bg-red-50 text-red-700 text-xs font-medium px-3 py-1 rounded-full dark:bg-red-900/40 dark:text-red-300">
+              <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+              Inactive
+            </span>
           </td>
-          <td class="px-6 py-3 flex justify-end items-center space-x-3">
-            <button (click)="editTag(value)" class="text-blue-600 hover:underline text-sm font-medium">Edit</button>
-            <button (click)="deleteTag(value)" class="text-red-600 hover:underline text-sm font-medium">Delete</button>
+          <td class="px-5 py-3 flex justify-end items-center gap-3">
+            <button (click)="editTag(value)" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm">
+              Edit
+            </button>
+            <button (click)="deleteTag(value)" class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium text-sm">
+              Delete
+            </button>
           </td>
         </tr>
         </tbody>
@@ -47,7 +57,7 @@
 
 <!-- Modal -->
 <div *ngIf="modalOpen" class="fixed inset-0 z-50 flex justify-center items-start pt-24 bg-black/30">
-  <div class="bg-white dark:bg-gray-900 rounded-xl w-full max-w-md p-8 shadow-2xl border border-gray-200 dark:border-gray-700 pointer-events-auto animate-fadeIn">
+  <div class="bg-white dark:bg-gray-900 rounded-lg w-full max-w-md p-8 shadow-2xl border border-gray-200 dark:border-gray-700 pointer-events-auto animate-fadeIn">
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add Tag</h2>
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Fill in the details to add a new tag</p>
 
