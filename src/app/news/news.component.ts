@@ -12,6 +12,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {TagService} from "../service/configuration/tag.service";
 import {Router} from "@angular/router";
 import {AuthorService} from "../service/configuration/author.service";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-news',
@@ -99,29 +100,28 @@ export class NewsComponent implements OnInit{
     });
   }
   loadMedia() {
-    this.mediaService.getAll().subscribe({
-      next: (res: any[]) => {
-        this.mediaList = res.map((m: any) => ({
-          ...m,
-          fileUrl: `http://localhost:3000/uploads/${m.filePath}`,
-        }));
-      },
-      error: () => this.toastr.error('Failed to load media'),
+    this.mediaService.getAll().subscribe((response:any)=>{
+      this.mediaList = response.data;
     });
   }
 
   // 🔹 TinyMCE "Browse" button handler
   filePickerCallback(callback: (url: string, meta?: any) => void, value: string, meta: any) {
     if (meta.filetype === 'image') {
+      console.log('hello');
       this.ngZone.run(() => {
         this.showMediaModal = true;
         this.tinyCallback = callback;
         this.currentMediaTarget = 'editor';
       });
+    }else {
+      console.log('hello 2');
     }
   }
 
   selectImage(url: string, media:any) {
+    console.log(url)
+    console.log(media)
     this.selectedUrl = url;
     this.selectedFeatureAttachmentId = media;
   }
@@ -161,7 +161,7 @@ export class NewsComponent implements OnInit{
     if (this.currentMediaTarget === 'editor' && this.editorInstance) {
       const editor = this.editorInstance;
       editor.insertContent(
-        `<img src="${this.selectedUrl}" alt="Selected image" style="max-width:100%;height:auto;" />`
+        `<img src="${this.selectedUrl}" alt="Selected image" style="width:500px;height:auto;" />`
       );
 
       const imgs = editor.dom.select('img');
@@ -197,7 +197,7 @@ export class NewsComponent implements OnInit{
     formData.append('file', file);
 
     this.http
-      .post<any>('http://localhost:3000/api/media/upload', formData)
+      .post<any>(environment.api_url+'/media/upload', formData)
       .subscribe({
         next: () => {
           this.toastr.success('Image uploaded!');
