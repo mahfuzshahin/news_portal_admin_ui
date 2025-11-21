@@ -178,7 +178,7 @@ export class AuthorComponent implements OnInit{
 
   editAuthor(value: any) {
     this.isAuthorView = true;
-    this.isUpdateButton = false;
+    this.isUpdateButton = true;
     this.isSaveButton = false;
     this.author= value;
     this.author.attachment_id = value.attachment?.id || null;
@@ -205,6 +205,7 @@ export class AuthorComponent implements OnInit{
       name: this.author.name,
       email: this.author.email,
       designation: this.author.designation,
+      description: this.author.description,
       attachment_id: this.selectedFeatureAttachmentId || this.author.attachment_id,
     };
     this.authorService.putAuthor(payload, this.author.id).subscribe((response:any)=>{
@@ -213,6 +214,7 @@ export class AuthorComponent implements OnInit{
         this.authors[indexToUpdate] = response.data;
         this.author = new Author();
         this.form?.resetForm(this.author);
+        this.toastr.success(response.message)
         this.isUpdateButton = false;
         this.isSaveButton = true;
         this.isAuthorView = false;
